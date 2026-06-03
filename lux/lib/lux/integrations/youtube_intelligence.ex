@@ -49,7 +49,7 @@ defmodule Lux.Integrations.YouTubeIntelligence do
   end
   defp get_comment_sentiment(_channel_id), do: {:ok, %{avg_sentiment: 0.75}}
   defp extract_keywords(items) do
-    items |> Enum.flat_map(fn i -> (i["snippet"]["tags"] || []) end) |> Enum.frequencies() |> Enum.sort_by(fn {_, c}, -> -c end) |> Enum.take(20)
+    items |> Enum.flat_map(fn i -> (i["snippet"]["tags"] || []) end) |> Enum.frequencies() |> Enum.sort_by(fn {_, c} -> -c end) |> Enum.take(20)
   end
   defp calculate_engagement(stats) do
     views = String.to_integer(stats["viewCount"] || "1")
