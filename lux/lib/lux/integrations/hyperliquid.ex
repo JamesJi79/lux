@@ -1,21 +1,23 @@
 defmodule Lux.Integrations.Hyperliquid do
   @moduledoc "Hyperliquid DEX integration for perpetual trading."
   @base_url "https://api.hyperliquid.xyz"
-  @info_url "https://api.hyperliquid.xyz/info"
-  def metadata, do: get_info("/meta")
-  def all_mids, do: get_info("/allMids")
-  def orderbook(coin), do: post_info("/l2Book", %{"coin" => coin})
-  def recent_trades(coin), do: post_info("/trades", %{"coin" => coin})
-  def candle_snapshot(coin, interval, limit \\ 100), do: post_info("/candleSnapshot", %{"coin" => coin, "interval" => interval, "limit" => limit})
-  defp get_info(path), do: req(:get, @info_url <> path, %{}, false)
-  defp post_info(path, body), do: req(:post, @info_url <> path, body, false)
-  defp req(method, url, body, signed) do
-    opts = [url: url, headers: [{"Content-Type", "application/json"}]]
-    req = Req.new(opts)
-    case Req.request(req, method: method, json: body) do
+
+  def metadata, do: post_info(%{"type" => "meta"})
+  def all_mids, do: post_info(%{"type" => "allMids"})
+  def orderbook(coin), do: post_info(%{"type" => "l2Book", "coin" => coin})
+  def recent_trades(coin), do: post_info(%{"type" => "trades", "coin" => coin})
+  def candle_snapshot(coin, interval, limit \\ 100), do: post_info(%{"type" => "candleSnapshot", "coin" => coin, "interval" => interval, "limit" => limit})
+
+  defp post_info(body) do
+    url = "#{@base_url}/info"
+    req(:post, url, body, false)
+  end
+
+  defp req(method, url, body, _signed) do
+    case Req.post(url, json: body, headers: [{"Content-Type", "application/json"}], receive_timeout: 10_000) do
       {:ok, %{status: 200, body: b}} -> {:ok, b}
       {:ok, %{status: s, body: b}} -> {:error, {s, b}}
-      {:error, e} -> {:error, inspect(e)}
+      {:error, e} -> {:error, e}
     end
   end
 end
