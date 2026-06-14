@@ -70,7 +70,7 @@ defmodule Lux.Integrations.TradingView do
       initial_sma = average(first_n)
 
       result =
-        Enum.reduce(rest, initial_sna, fn price, acc ->
+        Enum.reduce(rest, initial_sma, fn price, acc ->
           (price - acc) * multiplier + acc
         end)
 
