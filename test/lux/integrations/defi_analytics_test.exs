@@ -4,49 +4,66 @@ defmodule Lux.Integrations.DefiAnalyticsTest do
   alias Lux.Integrations.DefiAnalytics
 
   describe "protocol data" do
-    test "top_protocols/0 returns protocol TVL data" do
-      result = DefiAnalytics.top_protocols(limit: 5)
+    test "protocol_tvl/0 returns protocol TVL" do
+      result = DefiAnalytics.protocol_tvl()
       assert elem(result, 0) in [:ok, :error]
     end
 
-    test "protocol_by_slug/0 returns specific protocol" do
-      result = DefiAnalytics.protocol_by_slug("uniswap-v3")
+    test "protocol_tvl_history/0 returns historical TVL" do
+      result = DefiAnalytics.protocol_tvl_history("uniswap-v3", days: 7)
+      assert elem(result, 0) in [:ok, :error]
+    end
+
+    test "protocol_metrics/0 returns protocol metrics" do
+      result = DefiAnalytics.protocol_metrics("uniswap-v3")
+      assert elem(result, 0) in [:ok, :error]
+    end
+
+    test "protocol_fees/0 returns protocol fees" do
+      result = DefiAnalytics.protocol_fees("uniswap-v3")
+      assert elem(result, 0) in [:ok, :error]
+    end
+
+    test "protocol_revenue/0 returns protocol revenue" do
+      result = DefiAnalytics.protocol_revenue("uniswap-v3")
       assert elem(result, 0) in [:ok, :error]
     end
   end
 
   describe "chain data" do
-    test "chain_tvl/0 returns chain-level TVL" do
+    test "chain_tvl/0 returns chain TVL" do
       result = DefiAnalytics.chain_tvl("ethereum")
       assert elem(result, 0) in [:ok, :error]
     end
   end
 
-  describe "token data" do
-    test "token_market_data/0 returns token info" do
-      # Use USDC as a known token address
-      result = DefiAnalytics.token_market_data("0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48")
+  describe "yield data" do
+    test "yield_pools/0 returns yield pools" do
+      result = DefiAnalytics.yield_pools(limit: 5)
+      assert elem(result, 0) in [:ok, :error]
+    end
+
+    test "top_yields/0 returns top yields" do
+      result = DefiAnalytics.top_yields(limit: 10)
       assert elem(result, 0) in [:ok, :error]
     end
   end
 
-  describe "trending" do
-    test "trending_protocols/0 returns trending data" do
-      result = DefiAnalytics.trending_protocols(limit: 10)
+  describe "DEX data" do
+    test "dex_volume/0 returns DEX volume" do
+      result = DefiAnalytics.dex_volume("uniswap-v3")
       assert elem(result, 0) in [:ok, :error]
     end
   end
 
-  describe "stablecoin data" do
-    test "stablecoin_circulation/0 returns stablecoin metrics" do
-      result = DefiAnalytics.stablecoin_circulation()
+  describe "comprehensive analytics" do
+    test "comprehensive_analytics/0 returns full analysis" do
+      result = DefiAnalytics.comprehensive_analytics("uniswap-v3")
       assert elem(result, 0) in [:ok, :error]
     end
-  end
 
-  describe "market overview" do
-    test "market_overview/0 returns aggregate metrics" do
-      result = DefiAnalytics.market_overview()
+    test "monitor_tvl_change/0 returns TVL change monitoring" do
+      result = DefiAnalytics.monitor_tvl_change("uniswap-v3", 24)
       assert elem(result, 0) in [:ok, :error]
     end
   end
